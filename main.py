@@ -47,7 +47,12 @@ class Game:
         self.lookAngle = 0
         self.CameraMode = False
         # self.CameraCooldown = 10
-        self.hovered = False
+        self.lookAngle = 0
+        self.CameraMode = False
+        self.CameraCooldown = 10
+        self.CameraScreen = 0
+        self.CamsList = []
+        self.clickflag = False
         
     def new(self):
         # create a group for all sprites
@@ -59,6 +64,15 @@ class Game:
         # self.player = Player(self)
         # add instances to groups
 
+        # credit to Mr. Cozort for giving me this idea of instantiating all the buttons at once
+        # https://www.w3schools.com/python/python_classes.asp
+        x = 0
+        for b in CAMSWITCH_LIST:
+            # instantiation of the Button class
+            cswitch = Button(*b)
+            cswitch.name = 0 + x
+            self.CamsList.append(cswitch)
+            x += 1
         self.run()
     
     def run(self):
@@ -74,17 +88,34 @@ class Game:
         mouse = pg.mouse.get_pos()
 
         # if player mouse = bottom of screen then toggle off camera mode
-        if mouse[0] > SCREENRIGHT + 50 or mouse[0] > SCREENLEFT - 50 and mouse[1] > SCREENBOTTOM and not self.hovered:
-            # cooldown so camera isnt just spamming
-            # if self.CameraCooldown <= 0:
+        # https://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection for "flags"
+        if (mouse[0] < SCREENRIGHT - 50 or mouse[0] > SCREENLEFT + 50) and (mouse[1] > SCREENBOTTOM) and not self.hovered:
             self.CameraMode = not self.CameraMode
-            self.CameraCooldown = 10
             print("CameraMode is on:",self.CameraMode)
-        self.hovered = mouse[0] > SCREENRIGHT + 50 or mouse[0] > SCREENLEFT - 50 and mouse[1] > SCREENBOTTOM
+        self.hovered = (mouse[0] < SCREENRIGHT + 50 or mouse[0] > SCREENLEFT - 50) and mouse[1] > SCREENBOTTOM
 
+        # what the game does while player is looking at cams
         if self.CameraMode:
-            pass
+            for cams in self.CamsList:
+            # instantiation of the Button class
+                self.all_sprites.add(cams)
+                self.all_buttons.add(cams)
+
+            # my detection for if the player hits a button
+            # pretty sure there's a better way to do this gotta ask Mr. Cozort has one
+            x = 0
+            for cams in self.CamsList:
+                if cams.is_clicked() and not self.clickflag:
+                    print("you clicked on cam", cams.name)
+                    self.CameraScreen = cams.name
+                x += 1
+            self.clickflag = pg.mouse.get_pressed()[0]
+
+        # what the game does while player is looking in office
         else:
+            # deletes all instances of the camera buttons after CameraMode is False
+            for cams in self.CamsList:
+                cams.kill()
             '''
             detects when player's mouse is on edge of screen then camera looks around
             found out that the mouse position was a tuple and just needed the x coordinate

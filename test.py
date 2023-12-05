@@ -11,6 +11,8 @@ import math
 
 vec = pg.math.Vector2
 
+CAMSCREEN_LIST = [WHITE, BLACK, RED, GREEN, BLUE]
+
 # setup asset folders here - images sounds etc.
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'images')
@@ -30,6 +32,10 @@ class Game:
         self.lookAngle = 0
         self.CameraMode = False
         self.CameraCooldown = 10
+        # self.clicked = False
+        self.CameraScreen = BLACK
+        self.CamsList = []
+        self.clickflag = False
         
     def new(self):
         # create a group for all sprites
@@ -42,11 +48,17 @@ class Game:
         # add instances to groups
 
         # credit to Mr. Cozort for giving me this idea of instantiating all the buttons at once
+        # https://www.w3schools.com/python/python_classes.asp
+        x = 0
         for b in CAMSWITCH_LIST:
             # instantiation of the Button class
             cswitch = Button(*b)
+            cswitch.name = 0 + x
+            self.CamsList.append(cswitch)
             self.all_sprites.add(cswitch)
             self.all_buttons.add(cswitch)
+            x += 1
+            print(b)
 
         self.run()
     
@@ -59,9 +71,18 @@ class Game:
             self.draw()
 
     def update(self): 
-        self.all_sprites.update()   
-        if Button(Sprite).clicked == True:
-            print("truely it has worked")
+        self.all_sprites.update()
+        
+        # if button #0 clicked go to screen 0 and if button #1 clicked go to screen 1
+        x = 0
+        for cams in self.CamsList:
+            if cams.is_clicked() and not self.clickflag:
+                print("you clicked on cam", cams.name)
+                self.CameraScreen = CAMSCREEN_LIST[cams.name]
+            x += 1
+        self.clickflag = pg.mouse.get_pressed()[0]
+
+        # print(self.CameraScreen)
 
     def events(self):
         for event in pg.event.get():
@@ -77,7 +98,7 @@ class Game:
     def draw(self):
         ############ Draw ################
         # draw the background screen
-        self.screen.fill(BLACK)
+        self.screen.fill(self.CameraScreen)
         # draw all sprites
         self.all_sprites.draw(self.screen)
         # buffer - after drawing everything, flip display
