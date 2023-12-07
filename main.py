@@ -4,15 +4,16 @@
 
 '''
 ############# Overview #############
-
-
-############## Ideas ##############
-Fnaf
-
-
+Player is person stuck in a single room and has to use the cameras
+to keep track of the enemies trying to get to their room. Once the enemy
+gets to their room they lose. The player can use the information from the 
+camera to their advantage so they can know what to do to prevent themselves from being killed
 ############## To Do ##############
-
-
+Add "animatronics"
+- each animatronic has a set path through the map
+- each animatronic has a chance to move every movement tick
+- when an animatronic makes it to the player they lose
+- only show up in the cam that is on their location
 '''
 
 # import libraries and modules
@@ -73,6 +74,11 @@ class Game:
             cswitch.name = 0 + x
             self.CamsList.append(cswitch)
             x += 1
+
+        Bot1 = Animatronic(0, HEIGHT/2, 100, 200)
+        Bot2 = Animatronic(WIDTH /2, HEIGHT /2, 100, 200)
+        Bot3 = Animatronic(WIDTH -100, HEIGHT /2, 100, 200)
+
         self.run()
     
     def run(self):

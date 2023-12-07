@@ -4,7 +4,9 @@ from pygame.sprite import Sprite
 
 from pygame.math import Vector2 as vec
 import os
+from random import randint
 from settings import *
+
 
 # setup asset folders here - images sounds etc.
 game_folder = os.path.dirname(__file__)
@@ -20,7 +22,7 @@ snd_folder = os.path.join(game_folder, 'sounds')
 
         
 
-class HoverRect(Sprite):
+class Animatronic(Sprite):
     def __init__(self, x, y, w, h):
         Sprite.__init__(self)
         self.image = pg.Surface((w, h))
@@ -28,10 +30,17 @@ class HoverRect(Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        # self.kind = kind
+        self.speed = 1
+        self.location = 0
         self.pos = vec(WIDTH, HEIGHT)
 
     # def update(self):
+        # every "hour" the probabilty to move goes up
+
+    def movement_opportunity(self):
+        moveChance = randint(1, 20 - self.speed)
+        if moveChance == 1:
+            self.location += 1
 
 class Button(Sprite):
     def __init__(self, x, y, w, h):
@@ -42,9 +51,8 @@ class Button(Sprite):
         self.rect.x = x - w/2
         self.rect.y = y - h/2
         # self.kind = kind
-        self.pos = vec(WIDTH/2, HEIGHT/2)
+        self.pos = vec(WIDTH, HEIGHT)
         self.clickflag = False
-        # self.clicked = False
         self.name = 0
     # https://www.w3schools.com/python/python_classes.asp
     # def __str__(self):

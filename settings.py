@@ -25,11 +25,13 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+YELLOW = (239, 204, 0)
 
-
-CAMSWITCH_LIST = [(WIDTH /2, HEIGHT /2, 50, 50),
-                  (WIDTH /2 +100, HEIGHT /2 +100, 50, 50),
-                  (WIDTH /2 -100, HEIGHT /2 +100, 50, 50)]
+shiftright = 300
+shiftdown = 100
+CAMSWITCH_LIST = [(WIDTH /2 +shiftright, HEIGHT /2 +shiftdown, 50, 50),
+                  (WIDTH /2 +100 +shiftright, HEIGHT /2 +100 +shiftdown, 50, 50),
+                  (WIDTH /2 -100 +shiftright, HEIGHT /2 +100 +shiftdown, 50, 50)]
 
 BACKGROUND_LIST = [('Dino.png')
 

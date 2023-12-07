@@ -11,7 +11,7 @@ import math
 
 vec = pg.math.Vector2
 
-CAMSCREEN_LIST = [WHITE, BLACK, RED, GREEN, BLUE]
+CAMBG_LIST = [WHITE, BLACK, YELLOW, RED, GREEN, BLUE]
 
 # setup asset folders here - images sounds etc.
 game_folder = os.path.dirname(__file__)
@@ -27,17 +27,21 @@ class Game:
         pg.display.set_caption("Testing site for DIY Fnaf")
         self.clock = pg.time.Clock()
         self.running = True
-    
+
+        
+    def new(self):
         # load in variables I'm going to be using in loop
         self.lookAngle = 0
         self.CameraMode = False
         self.CameraCooldown = 10
         # self.clicked = False
-        self.CameraScreen = BLACK
+        self.CameraBG = BLACK
+        self.CameraScreen = -1
         self.CamsList = []
         self.clickflag = False
-        
-    def new(self):
+        self.Hour = 0
+        self.Minute = 0
+
         # create a group for all sprites
         self.score = 0
         self.all_sprites = pg.sprite.Group()
@@ -60,6 +64,15 @@ class Game:
             x += 1
             print(b)
 
+        Bot1 = Animatronic(0, HEIGHT/2, 100, 200)
+        Bot2 = Animatronic(WIDTH /2, HEIGHT /2, 100, 200)
+        Bot3 = Animatronic(WIDTH -100, HEIGHT /2, 100, 200)
+
+        self.bots_list = [Bot1, Bot2, Bot3]
+
+        for bots in self.bots_list:
+            self.all_animatronics.add(bots)
+
         self.run()
     
     def run(self):
@@ -71,17 +84,34 @@ class Game:
             self.draw()
 
     def update(self): 
-        self.all_sprites.update()
-        
+        self.all_buttons.update()
+        self.all_animatronics.update()
+
+        if self.Minute >= 1:
+            for bots in self.bots_list:
+                bots.speed += 1
+            self.Hour += 1
+            self.Minute = 0
+            print("the hour has changed")
+
         # if button #0 clicked go to screen 0 and if button #1 clicked go to screen 1
         x = 0
         for cams in self.CamsList:
             if cams.is_clicked() and not self.clickflag:
-                print("you clicked on cam", cams.name)
-                self.CameraScreen = CAMSCREEN_LIST[cams.name]
+                self.CameraBG = CAMBG_LIST[cams.name]
+                self.CameraScreen = cams.name
+                print("You are now looking at screen",cams.name)
             x += 1
         self.clickflag = pg.mouse.get_pressed()[0]
 
+        for bots in self.bots_list:
+            if bots.location == self.CameraScreen:
+                self.all_sprites.add(bots)
+            else: 
+                bots.remove(self.all_sprites)
+
+        self.Minute += 0.005
+        print(self.Hour)
         # print(self.CameraScreen)
 
     def events(self):
@@ -98,7 +128,7 @@ class Game:
     def draw(self):
         ############ Draw ################
         # draw the background screen
-        self.screen.fill(self.CameraScreen)
+        self.screen.fill(self.CameraBG)
         # draw all sprites
         self.all_sprites.draw(self.screen)
         # buffer - after drawing everything, flip display
