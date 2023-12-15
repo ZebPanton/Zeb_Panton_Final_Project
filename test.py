@@ -11,7 +11,7 @@ import math
 
 vec = pg.math.Vector2
 
-CAMBG_LIST = [WHITE, BLACK, YELLOW, RED, GREEN, BLUE]
+CAMBG_LIST = [GREEN, BLACK, YELLOW, RED, GREEN, BLUE, GREEN, BLACK, YELLOW, RED, GREEN]
 
 # setup asset folders here - images sounds etc.
 game_folder = os.path.dirname(__file__)
@@ -41,6 +41,7 @@ class Game:
         self.clickflag = False
         self.Hour = 0
         self.Minute = 0
+        self.MovementClock = 0
 
         # create a group for all sprites
         self.score = 0
@@ -51,8 +52,11 @@ class Game:
         # self.player = Player(self)
         # add instances to groups
 
+        camMap = Background(*camMapBG)
+        self.all_sprites.add(camMap)
+
         # credit to Mr. Cozort for giving me this idea of instantiating all the buttons at once
-        # https://www.w3schools.com/python/python_classes.asp
+        # https://www.w3schools.com/python/python_classes.asp       
         x = 0
         for b in CAMSWITCH_LIST:
             # instantiation of the Button class
@@ -64,11 +68,15 @@ class Game:
             x += 1
             print(b)
 
-        Bot1 = Animatronic(0, HEIGHT/2, 100, 200)
-        Bot2 = Animatronic(WIDTH /2, HEIGHT /2, 100, 200)
-        Bot3 = Animatronic(WIDTH -100, HEIGHT /2, 100, 200)
+        Bot1 = Animatronic(*BOT1_POSITION[0])
+        # Bot2 = Animatronic(*BOT2_POSITION[0])
+        # Bot3 = Animatronic(*BOT3_POSITION[0])
 
-        self.bots_list = [Bot1, Bot2, Bot3]
+        Bot1.path = BOT1_POSITION
+        # Bot2.path = BOT2_POSITION
+        # Bot3.path = BOT3_POSITION
+
+        self.bots_list = [Bot1]
 
         for bots in self.bots_list:
             self.all_animatronics.add(bots)
@@ -94,6 +102,12 @@ class Game:
             self.Minute = 0
             print("the hour has changed")
 
+        if self.MovementClock >= 100:
+            for bots in self.bots_list:
+                bots.movement_opportunity()
+            self.MovementClock = 0
+            print("bots had a chance to move")
+
         # if button #0 clicked go to screen 0 and if button #1 clicked go to screen 1
         x = 0
         for cams in self.CamsList:
@@ -104,14 +118,20 @@ class Game:
             x += 1
         self.clickflag = pg.mouse.get_pressed()[0]
 
+
         for bots in self.bots_list:
             if bots.location == self.CameraScreen:
+                w, h = bots.path[bots.location][2], bots.path[bots.location][3]
+                bots.rect.x, bots.rect.y, bots.image = bots.path[bots.location][0], bots.path[bots.location][1], pg.Surface((w, h))
+                bots.image.fill(RED)
                 self.all_sprites.add(bots)
             else: 
                 bots.remove(self.all_sprites)
 
-        self.Minute += 0.005
-        print(self.Hour)
+        self.Minute += 0.001
+        self.MovementClock += 1 
+        print(self.MovementClock)
+        # print(self.Minute)
         # print(self.CameraScreen)
 
     def events(self):

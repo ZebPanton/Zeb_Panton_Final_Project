@@ -33,6 +33,7 @@ class Animatronic(Sprite):
         self.speed = 1
         self.location = 0
         self.pos = vec(WIDTH, HEIGHT)
+        self.path = []
 
     # def update(self):
         # every "hour" the probabilty to move goes up
@@ -54,28 +55,18 @@ class Button(Sprite):
         self.pos = vec(WIDTH, HEIGHT)
         self.clickflag = False
         self.name = 0
-    # https://www.w3schools.com/python/python_classes.asp
-    # def __str__(self):
-        # return f"camera({self.name})"
     def update(self):
-        # # https://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
-        # if (self.rect.collidepoint(pg.mouse.get_pos()) and pg.mouse.get_pressed()[0]) and not self.clickflag:
-        #     print("button clicked")
-        #     # return self.name
-        # self.clickflag = pg.mouse.get_pressed()[0] and self.rect.collidepoint(pg.mouse.get_pos())
         pass
-    # def update(self):
-    #     return pg.mouse.get_pressed()[0] and self.rect.collidepoint(pg.mouse.get_pos())
     def is_clicked(self):
         return pg.mouse.get_pressed()[0] and self.rect.collidepoint(pg.mouse.get_pos())
             
     
-# class Background(Sprite):
-#     def __init__(self, photo):
-#         # self.image = pg.Surface((WIDTH, HEIGHT))
-#         # self.image.fill(BLUE)
-#         self.image = pg.image.load(os.path.join(img_folder, photo)).convert()
-#         self.rect = self.image.get_rect()
-#         self.rect.x = 0
-#         self.rect.y = 0
-#         self.pos = vec(WIDTH/2, HEIGHT/2)
+class Background(Sprite):
+    def __init__(self, x, y, photo):
+        Sprite.__init__(self)
+        self.image = pg.image.load(os.path.join(img_folder, photo))
+        self.rect = self.image.get_rect()
+        self.rect.x = x 
+        self.rect.y = y
+        self.pos = vec(WIDTH/2, HEIGHT/2)
+        

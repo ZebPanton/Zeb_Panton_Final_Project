@@ -43,19 +43,18 @@ class Game:
         pg.display.set_caption("Singular Night at Wherever")
         self.clock = pg.time.Clock()
         self.running = True
-    
+
+    def new(self):
         # load in variables I'm going to be using in loop
-        self.lookAngle = 0
         self.CameraMode = False
-        # self.CameraCooldown = 10
-        self.lookAngle = 0
-        self.CameraMode = False
-        self.CameraCooldown = 10
         self.CameraScreen = 0
         self.CamsList = []
         self.clickflag = False
-        
-    def new(self):
+        self.officeinstantiated = False
+        self.camsinstantiated = False
+        self.door1opened, self.door2opened = True, True
+        self.doors = [self.door1opened, self.door2opened]
+
         # create a group for all sprites
         self.score = 0
         self.all_sprites = pg.sprite.Group()
@@ -75,6 +74,15 @@ class Game:
             self.CamsList.append(cswitch)
             x += 1
 
+        self.camMap = Background(*camMapBG)
+
+        DoorButt1 = Button(30, HEIGHT/2, 50, 50)
+        DoorButt2 = Button(WIDTH -30, HEIGHT/2, 50, 50)
+        DoorButt1.image.fill(RED)
+        DoorButt2.image.fill(RED)
+        DoorButt2.name = 1
+        self.DoorButtList = [DoorButt1, DoorButt2]
+
         Bot1 = Animatronic(0, HEIGHT/2, 100, 200)
         Bot2 = Animatronic(WIDTH /2, HEIGHT /2, 100, 200)
         Bot3 = Animatronic(WIDTH -100, HEIGHT /2, 100, 200)
@@ -93,7 +101,7 @@ class Game:
         self.all_sprites.update()
         mouse = pg.mouse.get_pos()
 
-        # if player mouse = bottom of screen then toggle off camera mode
+        # if player mouse = bottom of screen then toggle on/off camera mode
         # https://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection for "flags"
         if (mouse[0] < SCREENRIGHT - 50 or mouse[0] > SCREENLEFT + 50) and (mouse[1] > SCREENBOTTOM) and not self.hovered:
             self.CameraMode = not self.CameraMode
@@ -102,13 +110,18 @@ class Game:
 
         # what the game does while player is looking at cams
         if self.CameraMode:
-            for cams in self.CamsList:
-            # instantiation of the Button class
-                self.all_sprites.add(cams)
-                self.all_buttons.add(cams)
+            if not self.camsinstantiated:
+                for cams in self.CamsList:
+                    self.all_sprites.add(cams)
+                    self.all_buttons.add(cams)
+                for doors in self.DoorButtList:
+                    doors.kill()
+                self.all_sprites.add(self.camMap)
+                self.camsinstantiated = True
+                self.officeinstantiated = False
+                print("cams have been instantiated")
 
-            # my detection for if the player hits a button
-            # pretty sure there's a better way to do this gotta ask Mr. Cozort has one
+            # my detection for if the player hits a cam button
             x = 0
             for cams in self.CamsList:
                 if cams.is_clicked() and not self.clickflag:
@@ -117,27 +130,31 @@ class Game:
                 x += 1
             self.clickflag = pg.mouse.get_pressed()[0]
 
+
         # what the game does while player is looking in office
         else:
-            # deletes all instances of the camera buttons after CameraMode is False
-            for cams in self.CamsList:
-                cams.kill()
-            '''
-            detects when player's mouse is on edge of screen then camera looks around
-            found out that the mouse position was a tuple and just needed the x coordinate
-            https://www.w3schools.com/python/python_tuples.asp'''
-            if mouse[0] > SCREENRIGHT:
-                self.lookAngle += 1
-                print("player is looking right")
-            elif mouse[0] < SCREENLEFT:
-                self.lookAngle -= 1
-                print("player is looking left")
+            # only need to run this line once so made a system to make sure
+            if not self.officeinstantiated: 
+                for cams in self.CamsList:
+                    cams.kill()
+                for doorbutt in self.DoorButtList:
+                    self.all_sprites.add(doorbutt)
+                    self.all_buttons.add(doorbutt)
+                self.camMap.kill()
+                self.camsinstantiated = False
+                self.officeinstantiated = True
+                print("office has been instantiated")
 
-        # restrain how far player is able to look around
-        if 30 < self.lookAngle:
-            self.lookAngle = 30
-        elif -30 > self.lookAngle:
-            self.lookAngle = -30
+            # if door button clicked then door = closed/opened
+            for doorbutt in self.DoorButtList:
+                if doorbutt.is_clicked() and not self.clickflag:
+                    self.doors[doorbutt.name] = not self.doors[doorbutt.name]
+                    print(self.doors[doorbutt.name])
+                    # print(doorbutt.name)
+            self.clickflag = pg.mouse.get_pressed()[0]
+
+
+
 
         # self.CameraCooldown -= 1
         # print(self.CameraMode)

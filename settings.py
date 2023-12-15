@@ -4,7 +4,7 @@
 # Video link: https://youtu.be/OmlQ0XCvIn0 
 
 # game settings 
-WIDTH = 940
+WIDTH = 1080
 HEIGHT = 480
 FPS = 30
 
@@ -27,12 +27,27 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (239, 204, 0)
 
-shiftright = 300
-shiftdown = 100
-CAMSWITCH_LIST = [(WIDTH /2 +shiftright, HEIGHT /2 +shiftdown, 50, 50),
-                  (WIDTH /2 +100 +shiftright, HEIGHT /2 +100 +shiftdown, 50, 50),
-                  (WIDTH /2 -100 +shiftright, HEIGHT /2 +100 +shiftdown, 50, 50)]
+shiftright = 325 #300
+shiftdown = 50 #100
 
-BACKGROUND_LIST = [('Dino.png')
+camMapBG = (WIDTH/2 -(350/2) +shiftright, HEIGHT/2 -((350/2)/2) +shiftdown, 'CamMap.png')
 
-]
+CamButtonWidth = 30
+CamButtonLength = CamButtonWidth/1.5
+
+CAMSWITCH_LIST = [(WIDTH /2 +103 +shiftright, HEIGHT /2 -57 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 +147 +shiftright, HEIGHT /2 +6 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 +47 +shiftright, HEIGHT /2 -57 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 -49 +shiftright, HEIGHT /2 -57 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 +47 +shiftright, HEIGHT /2 -27 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 -47 +shiftright, HEIGHT /2 +40 +shiftdown, CamButtonWidth, CamButtonLength),
+                  (WIDTH /2 -145 +shiftright, HEIGHT /2 +7 +shiftdown, CamButtonWidth/1.25, CamButtonLength/1.25),
+                  (WIDTH /2 -145 +shiftright, HEIGHT /2 +28 +shiftdown, CamButtonWidth/1.25, CamButtonLength/1.25),
+                  (WIDTH /2 -145 +shiftright, HEIGHT /2 +47 +shiftdown, CamButtonWidth/1.25, CamButtonLength/1.25),
+                  (WIDTH /2 -110 +shiftright, HEIGHT /2 +65 +shiftdown, CamButtonWidth/1.25, CamButtonLength/1.25)]
+
+BACKGROUND_LIST = [('Dino.png')]
+
+BOT1_POSITION = [(0, HEIGHT/2 -200, 100, 200), (0, HEIGHT/2 -200, 100, 200)]
+BOT2_POSITION = [(WIDTH /2, HEIGHT /2 -200, 100, 200)]
+BOT3_POSITION = [(WIDTH -100, HEIGHT /2 -200, 100, 200)]
