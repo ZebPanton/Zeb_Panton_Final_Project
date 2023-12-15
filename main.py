@@ -60,8 +60,6 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.all_animatronics = pg.sprite.Group()
         self.all_buttons = pg.sprite.Group()
-        # instantiate classes
-        # self.player = Player(self)
         # add instances to groups
 
         # credit to Mr. Cozort for giving me this idea of instantiating all the buttons at once
